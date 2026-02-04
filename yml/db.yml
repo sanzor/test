@@ -1,0 +1,27 @@
+services:
+  school-mgmt-db:
+    image: postgres:16
+    container_name: school-mgmt-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: school_mgmt
+    ports:
+      - "${DB_PORT:-5433}:5432"
+    volumes:
+      - school_mgmt_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d school_mgmt"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - school-mgmt-net
+
+volumes:
+  school_mgmt_pgdata:
+    name: school_mgmt_pgdata
+
+networks:
+  school-mgmt-net:
+    name: school-mgmt-net

@@ -1,0 +1,19 @@
+services:
+  school-mgmt-redis:
+    image: redis:7-alpine
+    container_name: school-mgmt-redis
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - school_mgmt_redis_data:/data
+    networks:
+      - school-mgmt-net
+
+volumes:
+  school_mgmt_redis_data:
+    name: school_mgmt_redis_data
+
+networks:
+  school-mgmt-net:
+    name: school-mgmt-net

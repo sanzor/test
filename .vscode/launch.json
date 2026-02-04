@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Backend: npm start",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm start",
+      "cwd": "${workspaceFolder}/backend"
+    },
+    {
+      "name": "Frontend: npm run dev",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev",
+      "cwd": "${workspaceFolder}/frontend"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Start Frontend + Backend",
+      "configurations": [
+        "Backend: npm start",
+        "Frontend: npm run dev"
+      ]
+    }
+  ]
+}

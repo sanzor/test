@@ -1,0 +1,8 @@
+{
+	"dependencies": {
+		"@mui/icons-material": "^7.3.7",
+		"@mui/material": "^7.3.7",
+		"react-hook-form": "^7.71.1",
+		"react-toastify": "^11.0.5"
+	}
+}
