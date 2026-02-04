@@ -27,6 +27,34 @@ export const DrawerContent: React.FC<DrawerContentProps> = ({
 }) => {
   const menus = useSelector(getUserMenus);
   const API_URL = import.meta.env.VITE_API_URL;
+  const normalizedMenus = React.useMemo(() => {
+    if (!menus) return [];
+
+    const uniqueParents = new Map<string, (typeof menus)[number]>();
+    menus.forEach((menu) => {
+      const key = `${menu.path || ""}:${menu.name}`;
+      if (!uniqueParents.has(key)) {
+        uniqueParents.set(key, menu);
+      }
+    });
+
+    return Array.from(uniqueParents.values()).map((menu) => {
+      const subMenus = Array.isArray(menu.subMenus) ? menu.subMenus : [];
+      const uniqueSubMenus = new Map<string, (typeof subMenus)[number]>();
+
+      subMenus.forEach((subMenu) => {
+        const key = `${subMenu.path || ""}:${subMenu.name}`;
+        if (!uniqueSubMenus.has(key)) {
+          uniqueSubMenus.set(key, subMenu);
+        }
+      });
+
+      return {
+        ...menu,
+        subMenus: Array.from(uniqueSubMenus.values())
+      };
+    });
+  }, [menus]);
 
   return (
     <div>
@@ -38,8 +66,7 @@ export const DrawerContent: React.FC<DrawerContentProps> = ({
       </Toolbar>
       <Divider />
       <List component='nav' sx={{ width: '100%' }}>
-        {menus &&
-          menus.map(({ name, path, subMenus, icon }) => {
+        {normalizedMenus.map(({ name, path, subMenus, icon }) => {
             if (Array.isArray(subMenus) && subMenus.length > 0) {
               return (
                 <Box key={name}>
