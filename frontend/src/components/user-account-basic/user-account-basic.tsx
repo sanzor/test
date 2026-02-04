@@ -160,7 +160,7 @@ export const UserAccountBasic = ({ data }: { data: UserAccountBasicDataProps }) 
       ];
       return [
         ...staticAction,
-        menuActions.map(({ action, icon, text }) => (
+        ...menuActions.map(({ action, icon, text }) => (
           <MenuItem
             onClick={() => {
               closeMenu();
