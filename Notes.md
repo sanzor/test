@@ -50,15 +50,29 @@
 
 ### Indexes Added and Why
 - Added `seed_db/indexes.sql` and applied via setup/make seed flow.
-- Main indexes:
-  - `user_refresh_tokens(token)` unique: fast refresh token lookup/revoke
-  - `user_refresh_tokens(user_id)`: fast token cleanup by user
-  - `users(role_id)`: frequent role filtering (students/staff/etc.)
-  - `users(name)`: frequent name-based filtering
-  - `notices(status)`, `notices(author_id)`: pending/status + author lookups
-  - `permissions(role_id)`: frequent permission checks
-  - `user_profiles(class_name, section_name, roll)`: student filter endpoints
-  - `user_leaves(user_id|status|leave_policy_id)`: leave query performance
+- Indexes added:
+  - `idx_user_refresh_tokens_token` on `user_refresh_tokens(token)` (unique)
+    Why: fast refresh-token lookup/revoke by token.
+  - `idx_user_refresh_tokens_user_id` on `user_refresh_tokens(user_id)`
+    Why: fast delete/cleanup of user sessions.
+  - `idx_users_role_id` on `users(role_id)`
+    Why: frequent filtering by role (students/staff/permissions flows).
+  - `idx_users_name` on `users(name)`
+    Why: name-based filters/search in lists.
+  - `idx_notices_status` on `notices(status)`
+    Why: pending/status-based notice queries.
+  - `idx_notices_author_id` on `notices(author_id)`
+    Why: author-based notice listing/join patterns.
+  - `idx_permissions_role_id` on `permissions(role_id)`
+    Why: hot permission check path (`checkApiAccess`).
+  - `idx_user_profiles_class_section_roll` on `user_profiles(class_name, section_name, roll)`
+    Why: student filtering by class/section/roll.
+  - `idx_user_leaves_user_id` on `user_leaves(user_id)`
+    Why: fetch leave history by user.
+  - `idx_user_leaves_status` on `user_leaves(status)`
+    Why: pending/approved leave queries.
+  - `idx_user_leaves_leave_policy_id` on `user_leaves(leave_policy_id)`
+    Why: joins and aggregations by policy.
 
 ## Makefile / Docker Workflow
 

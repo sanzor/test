@@ -53,6 +53,8 @@ rebuild-app: down-frontend down-backend
 	$(BACKEND_COMPOSE) up -d --force-recreate
 	$(FRONTEND_COMPOSE) up -d --force-recreate
 
+rebuild: rebuild-app
+
 up-all: up-db wait-db up-redis up-backend up-frontend
 
 down-all: down-frontend down-backend down-redis down-db
