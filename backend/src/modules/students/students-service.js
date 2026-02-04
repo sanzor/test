@@ -1,11 +1,12 @@
 const { ApiError, sendAccountVerificationEmail } = require("../../utils");
+const { STUDENT_MESSAGES } = require("../../constants");
 const { findAllStudents, findStudentDetail, findStudentToSetStatus, addOrUpdateStudent, deleteStudentById } = require("./students-repository");
 const { findUserById } = require("../../shared/repository");
 
 const checkStudentId = async (id) => {
     const isStudentFound = await findUserById(id);
     if (!isStudentFound) {
-        throw new ApiError(404, "Student not found");
+        throw new ApiError(404, STUDENT_MESSAGES.STUDENT_NOT_FOUND);
     }
 }
 
@@ -19,15 +20,13 @@ const getStudentDetail = async (id) => {
 
     const student = await findStudentDetail(id);
     if (!student) {
-        throw new ApiError(404, "Student not found");
+        throw new ApiError(404, STUDENT_MESSAGES.STUDENT_NOT_FOUND);
     }
 
     return student;
 }
 
 const addNewStudent = async (payload) => {
-    const ADD_STUDENT_AND_EMAIL_SEND_SUCCESS = "Student added and verification email sent successfully.";
-    const ADD_STUDENT_AND_BUT_EMAIL_SEND_FAIL = "Student added, but failed to send verification email.";
     try {
         const result = await addOrUpdateStudent(payload);
         if (!result.status) {
@@ -35,11 +34,11 @@ const addNewStudent = async (payload) => {
             const loweredMessage = String(result.message || "").toLowerCase();
             const loweredDescription = String(result.description || "").toLowerCase();
 
-            if (loweredMessage.includes("email already exists")) {
+            if (loweredMessage.includes(STUDENT_MESSAGES.EMAIL_ALREADY_EXISTS)) {
                 throw new ApiError(409, `${result.message}${detail}`);
             }
 
-            if (loweredDescription.includes("invalid input syntax")) {
+            if (loweredDescription.includes(STUDENT_MESSAGES.INVALID_INPUT_SYNTAX)) {
                 throw new ApiError(400, `${result.message}${detail}`);
             }
 
@@ -48,16 +47,16 @@ const addNewStudent = async (payload) => {
 
         try {
             await sendAccountVerificationEmail({ userId: result.userId, userEmail: payload.email });
-            return { message: ADD_STUDENT_AND_EMAIL_SEND_SUCCESS };
+            return { message: STUDENT_MESSAGES.ADD_STUDENT_AND_EMAIL_SEND_SUCCESS };
         } catch (error) {
-            return { message: ADD_STUDENT_AND_BUT_EMAIL_SEND_FAIL }
+            return { message: STUDENT_MESSAGES.ADD_STUDENT_BUT_EMAIL_SEND_FAIL }
         }
     } catch (error) {
         if (error instanceof ApiError) {
             throw error;
         }
 
-        throw new ApiError(500, `Unable to add student - ${error.message || "Unknown error"}`);
+        throw new ApiError(500, `${STUDENT_MESSAGES.UNABLE_TO_ADD_STUDENT} - ${error.message || STUDENT_MESSAGES.UNKNOWN_ERROR}`);
     }
 }
 
@@ -75,10 +74,10 @@ const setStudentStatus = async ({ userId, reviewerId, status }) => {
 
     const affectedRow = await findStudentToSetStatus({ userId, reviewerId, status });
     if (affectedRow <= 0) {
-        throw new ApiError(500, "Unable to disable student");
+        throw new ApiError(500, STUDENT_MESSAGES.UNABLE_TO_DISABLE_STUDENT);
     }
 
-    return { message: "Student status changed successfully" };
+    return { message: STUDENT_MESSAGES.STUDENT_STATUS_CHANGED_SUCCESS };
 }
 
 const deleteStudent = async (id) => {
@@ -86,10 +85,10 @@ const deleteStudent = async (id) => {
 
     const affectedRow = await deleteStudentById(id);
     if (affectedRow <= 0) {
-        throw new ApiError(500, "Unable to delete student");
+        throw new ApiError(500, STUDENT_MESSAGES.UNABLE_TO_DELETE_STUDENT);
     }
 
-    return { message: "Student deleted successfully" };
+    return { message: STUDENT_MESSAGES.STUDENT_DELETED_SUCCESS };
 }
 
 module.exports = {
