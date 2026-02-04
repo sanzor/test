@@ -3,7 +3,7 @@ REDIS_COMPOSE := docker compose -f yml/redis.yml
 BACKEND_COMPOSE := docker compose -f yml/backend.yml
 FRONTEND_COMPOSE := docker compose -f yml/frontend.yml
 
-.PHONY: setup up-db down-db up-redis down-redis up-backend down-backend up-frontend down-frontend rebuild-app up-all down-all wait-db seed-db logs-db logs-redis logs-backend logs-frontend
+.PHONY: setup up-db down-db up-redis down-redis up-backend down-backend up-frontend down-frontend rebuild rebuild-app up-all down-all wait-db seed-db logs-db logs-redis logs-backend logs-frontend
 
 setup:
 	./setup.sh

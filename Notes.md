@@ -124,7 +124,12 @@
     - `backend/src/modules/students/students-controller.test.js`
     - `backend/src/modules/students/students-service.test.js`
 - Added `npm test` script in `backend/package.json`.
-- Note: run `npm install` in backend to install Jest before running tests.
+- How to run tests:
+  1. `cd backend`
+  2. `npm install`
+  3. `npm test`
+- Run only student tests:
+  - `npx jest src/modules/students/students-controller.test.js src/modules/students/students-service.test.js --runInBand`
 
 ## Recommended Next Steps
 - Add DB migration tool (for production-ready schema evolution).
